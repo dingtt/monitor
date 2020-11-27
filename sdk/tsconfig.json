@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "sourceMap": true, //代码映射
+        "noImplicitAny": false, //强类型检查
+        "module": "es2015",
+        
+    "baseUrl": "./src", // 工作根目录
+    "removeComments": true, // 移除注释
+    "paths": { // 指定模块的路径，和baseUrl有关联
+        "@/*": [
+          "./*"
+        ]
+      },
+    "target": "es2015",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true, //允许从没有设置默认导出的模块中默认导入。
+    "experimentalDecorators":true,
+    },
+    "include": [
+        "./src/**/*",
+        "./src/*"
+    ]
+  }
