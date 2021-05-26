@@ -5,12 +5,9 @@
 // 网络类型  navigator.connection
 // 网络状态变化
 // 路由变化
+// screen  width height
 import { Ienv, LOG_TYPES } from '../types/index'
-// import { report } from '../report'
 
-export function handleEnv(): void {
-  // report.directReport(LOG_TYPES.ENV, {})
-}
 // 环境
 export function getEnv(): Ienv {
   if (typeof window === 'undefined') return
@@ -22,13 +19,10 @@ export function getEnv(): Ienv {
     language: navigator.language,
     url: window.location.href,
     net: connection ? connection.effectiveType : null,
-    // type:
+    screenW:window.screen.width,
+    screenH:window.screen.height
   }
   return envData
 }
 
-// navigator.onLine
-//window.online
-//window.onoffline
-// navigator.getBattery .battery
-// 内存 deviceMemory
+

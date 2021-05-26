@@ -49,7 +49,7 @@ export function isObject (value) {
 }
  
 // { a: [{ b: 2 }] } { a: [{ c: 2 }]} -> { a: [{b:2}, {c:2}]}
-// merge({o: {a: 3}}, {o: {b:4}}) => {o: {a:3, b:4}}
+// merge({o: {a: 3}}, {o: {b:4}}) => {o: {a:3, b:4}}  合并对象
 export function merge (source, other) {
   if (!isObject(source) || !isObject(other)) {
     return other === undefined ? source : other

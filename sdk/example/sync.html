@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sync</title>
+    <script src="./../dist/index.js"></script>
+    <script>
+        var dm = new Monitor({
+            version: '1.0.0', // 所监控应用版本
+            appkey: '4749fb30-3562-11eb-bf47-5d73b473057a', // 应用id，来自平台
+            reportUrl: 'http://118.190.245.148:8091/track.gif',
+            isTest: true,
+            uuid: '', // 设备唯一id 默认自动生成
+            uid: localStorage.getItem('uid') ? localStorage.getItem('uid') : ('user_' + Date.now())
+        }
+        )
+        performance.mark("first-paint-script");
+    </script>
+</head>
+
+<body>
+    <div>异步</div>
+    <script>
+
+        // 异步错误
+        function fun1() {
+            throw new Error('this is the error happened in settimeout')
+        }
+
+        setTimeout(() => {
+            Math.random() < 0.8 ? fun1() : void 0
+        }, 1000)
+
+        // Promise异常
+        if (Math.random() < 0.8) {
+            new Promise((resolve, reject) => {
+                abcxxx()
+            })
+        }
+
+        // async/await异常捕获
+        const asyncFunc = () =>
+            new Promise((resolve) => {
+                // error
+                throw new Error('this is the error happened in await')
+            })
+        setTimeout(async () => {
+            try {
+                await asyncFunc()
+            } catch (e) {
+                console.log('catch:', e)
+            }
+        })
+
+        const asyncFunc2 = async () =>
+            new Promise((resolve) => {
+                // error
+                throw new Error('this is the error happened in await')
+            })
+
+        // SyntaxError: await is only valid in async function
+        if (Math.random() < 0.8) {
+            // await asyncFunc2()
+        }
+        if (Math.random() < 0.8) {
+            ; (async () => {
+                await asyncFunc2()
+            })()
+        }
+    </script>
+</body>
+
+</html>

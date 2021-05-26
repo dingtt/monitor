@@ -1,4 +1,4 @@
-import { getParam, delay, log } from '../util/index'
+import { getParam, log } from '../util/index'
 import { PerfData, PerfExt } from '../types/index'
 import report from '../report'
 import { defaultConfig as config } from '../config'
@@ -11,7 +11,7 @@ export async function handlePerformance(): Promise<PerfData> {
     return
   }
   performance.mark('monitor-page-loaded')
-  // const originalPerfTiming = performance.timing.toJSON()
+
   const perf = (await getPerformance()) as PerfData
   // 约定起始时间
   if (config['benginkey']) {
@@ -34,7 +34,7 @@ export async function handlePerformance(): Promise<PerfData> {
     perf['isRefresh'] = window.name === 'monitor' ? 1 : 0
   }
   // 测试输出
-  calculateTiming(perf)
+  config.isTest && calculateTiming(perf)
   const perfExt = handleEntry()
   const mergePerf = {
     ...perf,
@@ -42,7 +42,8 @@ export async function handlePerformance(): Promise<PerfData> {
     time: Date.now(),
   }
   // 采样率
-  if (Math.random() <= config.rate) {
+  if (Math.random() <= 0.3) {
+    // config.rate
     report.add('perf', mergePerf)
   }
   // calculateImageLoadTime() // 计算图片加载时间
@@ -61,64 +62,67 @@ async function getPerformance(): Promise<PerformanceTiming> {
   })
 }
 
+function getTimeFromEntry(entry: PerformanceEntry): number {
+  if (!entry) return 0
+  return entry.startTime + entry.duration
+}
+
 export function handleEntry(): PerfExt {
-  // window.performance.getEntries()
   let fp, // 白屏时间
     fcp, // 首屏时间
     markFp, // 打点近似白屏时间
     markFcp, // 打点首屏
-    markPd = 0 // 打点onload
+    markLoad = 0 // 打点onload
   log('entries in onload', performance.getEntries())
-  // 首屏计算
   let longImgLoad = 0
+  // 官方API
+  // PerformancePaintTiming  只支持 chrome60 opera47
+  // FP和FCP时间一致，FP时间不准
+  fp = getTimeFromEntry(performance.getEntriesByName('first-paint')[0])
+  fcp = getTimeFromEntry(
+    performance.getEntriesByName('first-contentful-paint')[0]
+  )
+ 
   // 首屏时间(FCP) VS 白屏时间(FP)
   const entries = performance.getEntries()
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i]
     const metricName = entry.name
     const time = Math.round(entry.startTime + entry.duration)
-    // 官方API
-    // PerformancePaintTiming  只支持 chrome60 opera47
-    // FP和FCP时间一致，FP时间不准
-    if (metricName === 'first-paint') {
-      fp = time
-    }
-    if (metricName === 'first-contentful-paint') {
-      fcp = time
-    }
     if (
       entry.entryType === 'resource' &&
       (entry as PerformanceResourceTiming).initiatorType === 'img'
     ) {
-      // todo需要排除 上报图片
-      log('entry img', entry)
-      longImgLoad = time > longImgLoad ? time : longImgLoad
+      if (entry.name.indexOf(config.reportUrl) == -1) {
+        log('entry img', entry)
+        longImgLoad = time > longImgLoad ? time : longImgLoad
+      }
     }
-    // 自定义埋点
+    // 获取打点数据进行步骤
     // 需要客户端于</head>前自行埋点
     if (metricName === 'first-paint-script') {
       markFp = time
     }
     // onload perAPI中添加了埋点， 这个时间也可以在performance中计算得到
     if (metricName === 'monitor-page-loaded') {
-      markPd = time
+      markLoad = time
     }
     // 需要客户端自行埋点
     if (metricName === 'first-contentful-paint-custom') {
       markFcp = time
     }
-    //
     // Firefox  type 为initiatorTypeother
     // "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0"
     // safari 无FP FCP
     // "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38" =
   }
+
   log('raw perf', {
     fp,
     fcp,
     markFp,
     markFcp,
-    markPd,
+    markLoad,
     longImgLoad,
   })
   // api 不存在使用埋点数据
@@ -132,16 +136,69 @@ export function handleEntry(): PerfExt {
     markFp,
     fcp,
     markFcp,
-    markPd,
+    markLoad,
     longImgLoad,
   }
-  //图片时间
-  // 计算最长图片加载时间  判断是不是本站图片  排除上报gif
-  // chrome initiatorType: "img"  entryType: "resource"
-  // foxire initiatorType: "other"  entryType: "resource"   script initiatorType
 }
 
-// domObserver.disconnect()
+export function perfObserver() {
+  // FID
+  const observerInput = new PerformanceObserver(
+    (list: PerformanceObserverEntryList, observer) => {
+      const firstInput = list.getEntries()[0]
+      const inputDelay = firstInput['processingStart'] - firstInput.startTime
+      observerInput.disconnect()
+    }
+  )
+  observerInput.observe({ type: 'first-input', buffered: true })
+  // slow frame
+  const slowFrameObserver = new PerformanceObserver(
+    (list: PerformanceObserverEntryList) => {
+      const perEntries = list.getEntries()
+      for (let i = 0; i < perEntries.length; i++) {
+      }
+      slowFrameObserver.disconnect()
+    }
+  )
+  slowFrameObserver.observe({ entryTypes: ['frame'] })
+  // longtask 需要用观察者  只有chrome支持
+  let num = 0
+  const longTaskObserver = new PerformanceObserver(
+    (list: PerformanceObserverEntryList) => {
+      num++
+      const perEntries = list.getEntries()
+      for (let i = 0; i < perEntries.length; i++) {
+      }
+    }
+  )
+  longTaskObserver.observe({
+    entryTypes: ['longtask']
+  })
+  // LCP
+  const lcpFrameObserver = new PerformanceObserver(
+    (list: PerformanceObserverEntryList) => {
+      const perEntries = list.getEntries()
+      for (let i = 0; i < perEntries.length; i++) {
+      }
+      slowFrameObserver.disconnect()
+    }
+  )
+  lcpFrameObserver.observe({ type: 'largest-contentful-paint', buffered: true })
+  // CLS
+  let cls = 0
+  const clsObserver = new PerformanceObserver(
+    (list: PerformanceObserverEntryList) => {
+      const perEntries = list.getEntries()
+      for (let i = 0; i < perEntries.length; i++) {
+        if(!perEntries[i]['hadRecentInput']){
+          cls += perEntries[i]['value']
+        }
+      }
+      slowFrameObserver.disconnect()
+    }
+  )
+  clsObserver.observe({ type: 'layout-shift', buffered: true })
+}
 
 // 测试输出
 function calculateTiming(perf) {
@@ -156,6 +213,6 @@ function calculateTiming(perf) {
     'domready可操作时间',
     perf.domContentLoadedEventEnd - perf.navigationStart
   )
-  // onload 里调用时，perf.loadEventEnd 未结束值为0
+  // 需在onload里调用时，perf.loadEventEnd 未结束时值为0
   log('onload总下载时间', perf.loadEventEnd - perf.navigationStart)
 }

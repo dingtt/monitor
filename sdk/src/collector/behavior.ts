@@ -1,18 +1,13 @@
 import { LISTEN_EVENTS } from '../types/index'
 import { behaviorCache } from '../behaviorcache'
-import { getHash } from '../util/index'
+import { getHash, xpath } from '../util/index'
 // import { config } from './config'
 
 // 使用addEventListener全局监听点击事件，
 // 将用户行为（click,input）和dom元素名称,
-// 当错误发生将错误和行为一并上报.
+// 当错误发生将错误和行为一并上报
 
-// function
-// 在合并配置的时候做配置检查   还有把侦测的内容放进一个对象
-// export function handleClickJudgeOnline():void {
-
-// }
-let oldURL =  window.location.href
+let oldURL = window.location.href
 /**
  * historychange
  * 带hash的页面加载会触发popstate
@@ -35,29 +30,24 @@ export function handleHistoryChange(
   const tempOldURL = oldURL
   oldURL = newURL // 更新URL
   if (oldHash || newHash) {
-    // 这种情况 hashchange也会触发hashchange
+    // 这种情况 hashchange也会触发
     return
   }
   behaviorCache.directPush({
     type,
     data: {
-      oldURL:tempOldURL,
+      oldURL: tempOldURL,
       newURL,
     },
   })
-  
+  console.log('hs', behaviorCache)
 }
 
 export function handleHashChange(
   e: HashChangeEvent,
   type: LISTEN_EVENTS
 ): void {
-  const {oldURL, newURL } = e
-  // const oldHash = getHash(oldURL)
-  // const newHash = getHash(newURL)
-  // console.log('hashchange', { oldURL, newURL })
-  // console.log('hashchange', { oldHash, newHash })
-  // return
+  const { oldURL, newURL } = e
   behaviorCache.directPush({
     type,
     data: {
@@ -65,7 +55,6 @@ export function handleHashChange(
       oldURL,
     },
   })
-  // oldURL = newURL
 }
 
 export function handleBehaviorEvent(
@@ -73,30 +62,18 @@ export function handleBehaviorEvent(
   type: LISTEN_EVENTS
 ): void {
   const target = Array.isArray(e) ? e[0].target : e.target
-  // nodeName tagName 为大写 localName小写   todo Xpath  outerHTML  offsetX pageX
-  const { tagName, className } = target
-  // console.log(xpath(target))
+  //   todo Xpath  outerHTML  offsetX pageX
+  const { tagName, className, id, innerText } = target
   behaviorCache.directPush({
     type,
     data: {
       tagName,
       className,
+      id,
+      innerText: innerText.substr(0, 10),
+      xpath: xpath(target),
+      name: target.name || target.src || target.href,
     },
   })
+  console.log('h', behaviorCache)
 }
-
-// emptyFunc 定义变量
-// function aopWrap(target, pointCut, cb = emptyFunc) {
-// //   let old = findPointCut(target, pointCut)
-//    if(!(pointCut in target)) return
-//    const old = target[pointCut]
-//   if (old) {
-//     target[pointCut] = function (...args:any[]) {
-//       const self = this
-//       cb.apply(self, joinPoint)
-//       old && old.apply(self, args)
-//     }
-//   }
-// }
-
-// SDK本事的log日志，测试坏境下输出到控制台，正式坏境下 ，看是否上传

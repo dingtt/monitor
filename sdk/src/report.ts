@@ -9,7 +9,6 @@ import { defaultConfig as config } from './config'
 import {
   imgLoad,
   imgLoadPromise,
-  // xhrGetPromise,
   xhrGet,
   xhrPost,
   bulidURL,
@@ -47,7 +46,7 @@ const logData: any = {
     stack: '',
     // 资源错误
     outerHTML: '<img src="test.jpg">', // target.outerHTML
-    src: 'https://www.fundebug.com/test.jpg', // target.src  currentSrc
+    src: 'https://www.test.com/test.jpg', // target.src  currentSrc
     tagName: 'IMG', // target.nodeName tagName 'IMG'
     id: '', //  target.id
     className: '', // target.className
@@ -59,11 +58,6 @@ const logData: any = {
   }, // 错误数据
   time: '', // 上传时间，错误捕获时间
 }
-// 格式化后错误数据的type 或其他 主体数据
-// interface TrendsData {
-//   type: string
-//   time: number
-// }
 
 type SomeError = RuntimeError | ResourceError
 interface CommonErrorData extends RuntimeError, ResourceError {}
@@ -111,6 +105,7 @@ class Report implements IReport {
     }
   }
   request() {
+    // let repeat
     if (
       !this.taskQueue ||
       !this.taskQueue.length ||
@@ -121,10 +116,22 @@ class Report implements IReport {
     log('report', this.running, this.runCounts)
     const task = this.taskQueue.shift()
     if (task) {
-      task.then(() => {
-        this.runCounts--
-        this.request()
-      })
+      let repeat = 0
+      task
+        .then(
+          (res) => {
+            repeat = 0
+            this.runCounts--
+            this.request()
+          },
+          (err) => {
+            // undo失败重试
+            log('report err', err)
+          }
+        )
+        .catch((err) => {
+          log('report err', err)
+        })
     } else {
       this.running = false
     }
@@ -141,7 +148,7 @@ class Report implements IReport {
       url: inBrowser && window.location.href,
       title: inBrowser && window.document.title,
       // logtype: type,
-      // [type]: data,  // error   perf    behavior
+      // [type]: data,  // error perf behavior
       logtime: Date.now(),
     }
     if (type !== LOG_TYPES.ENV) {

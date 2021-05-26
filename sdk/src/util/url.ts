@@ -1,6 +1,4 @@
-// import isDate from 'lodash-es/isDate'
-import isObject from 'lodash-es/isObject'
-import { ua, testUa, testVs } from './broswer'
+import { testUa, testVs } from './broswer'
 
 const urlLengthLimit = {
   ie: 2000,
@@ -13,6 +11,11 @@ const toString = Object.prototype.toString
 
 export function isDate(val: any): val is Date {
   return toString.call(val) === '[object Date]'
+}
+
+ function isObject (value) {
+  const type = typeof value
+  return value !== null && (type === 'object' || type === 'function')
 }
 
 export function encode(val: string): string {

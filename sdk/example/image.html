@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片</title>
+    <script src="./../dist/index.js"></script>
+    <script>
+        var dm = new Monitor({
+            version: '1.0.0', // 所监控应用版本
+            appkey: '4749fb30-3562-11eb-bf47-5d73b473057a', // 应用id，来自平台
+            reportUrl: 'http://118.190.245.148:8091/track.gif',
+            isTest: true,
+            uuid: '', // 设备唯一id 默认自动生成
+            uid: localStorage.getItem('uid') ? localStorage.getItem('uid') : ('user_' + Date.now())
+            
+        }
+        )
+        performance.mark("first-paint-script");
+    </script>
+</head>
+
+<body>
+    <img src="./img/img.jpeg">
+    <img src="https://pic1.zhimg.com/v2-e327160ba23d1bc7c457b63798b85a69_1440w.jpg?source=172ae18b" alt="">
+    <img src="https://pic3.zhimg.com/80/v2-da19fcafb25e95a0717ddddb7311ae2f_720w.jpg" alt="">
+    <img id="img" src="https://pic2.zhimg.com/80/v2-d508a6d38ed6fc2741ef5f077ad62927_720w.jpg" alt="">
+    <script>
+        // 资源加载错误
+        // 动态加载图片（常用于懒加载） ，new Image() 无法捕捉到错误
+        // const errImg = new Image()
+        // errImg.src = "https://avatar.csdnimg.cn/3/8/3/3_weixin_34367846.jpg"
+        // errImg.src = "https://wx1.sinaimg.cn/thumb180/005vnhZYgy1ghevgfblcej30go0m8n1v2.jpg"
+        // errImg.onload = (e) => {
+        //     console.log(e)
+        // }
+        // errImg.onerror = (err) => {
+        //     console.log('img src', err)
+        // }
+    // 图床可能会有http403错误
+    // 解决方案  劫持
+
+     // img标签加载本地图片加载错误 加载错误
+     // add 可以捕捉到
+     // img标签加载远程图片
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./../dist/index.js"></script>
+    <script>
+        var dm = new Monitor({
+            version: '1.0.0', // 所监控应用版本
+            appkey: '4749fb30-3562-11eb-bf47-5d73b473057a', // 应用id，来自平台
+            reportUrl: 'http://118.190.245.148:8091/track.gif',
+            isTest: true,
+            uuid: '', // 设备唯一id 默认自动生成
+            uid: localStorage.getItem('uid') ? localStorage.getItem('uid') : ('user_' + Date.now())
+        }
+        )
+        performance.mark("first-paint-script");
+    </script>
+</head>
+
+<body>
+    <div>
+        <ul>
+            <li>SyntaxError：语法错误</li>
+            <li>Uncaught ReferenceError：引用错误</li>
+            <li>RangeError：范围错误</li>
+            <li>TypeError：类型错误</li>
+            <li>URIError：URL错误</li>
+            <li>EvalError eval()函数执行错误</li>
+        </ul>
+    </div>
+    <script>
+        // SyntaxError：语法错误
+
+        if (Math.random() < 0.5) {
+            //  var 1       // Uncaught SyntaxError: Unexpected number
+            //  var 1a       // Uncaught SyntaxError: Invalid or unexpected token
+            // 1.2 给关键字赋值
+            //  function = 5
+        }
+
+        //  Uncaught ReferenceError：引用错误
+        if (Math.random() < 0.5) {
+            // console.log('abc') = 1
+            // a()
+        }
+
+        // RangeError：范围错误
+        if (Math.random() < 0.5) {
+            var num = new Number(12.34)
+            var arr = []
+            // arr.length = -5
+        }
+
+        // TypeError：类型错误
+        if (Math.random() < 0.5) {
+            // 123()
+            // var p = new 456()
+        }
+
+        // URIError：URL错误
+        if (Math.random() < 0.5) {
+            decodeURI('%')
+        }
+
+        // EvalError eval()函数执行错误
+        if (Math.random() < 0.5) {
+            var myEval = eval
+            myEval("alet('call eval')")
+        }
+        // console引起错误
+        if (Math.random() < 0.5) {
+            console.log(hun)
+        }
+    </script>
+
+</body>
+
+</html>

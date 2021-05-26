@@ -40,6 +40,6 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "lodash-es": "^4.17.15"
+    "spark-md5": "^3.0.1"
   }
 }

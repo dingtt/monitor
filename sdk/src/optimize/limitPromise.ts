@@ -21,18 +21,6 @@ export default class LimitPromise {
   }
   createTask(caller: voidFun, args: unknown[], resolve: unknown, reject: unknown) {
     return (): void => {
-      // 调用异步任务，并把resolve reject 抛给上层
-      // caller(...args)
-      //   .then(resolve)
-      //   .catch(reject)
-      //   .finally(() => {
-      //     // 任务结束后，取出下一个任务
-      //     this._count--
-      //     if (this._taskQueue.length) {
-      //       const task = this._taskQueue.shift()
-      //       task()
-      //     }
-      //   })
       this._count++
     }
   }

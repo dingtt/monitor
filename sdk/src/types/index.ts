@@ -13,6 +13,7 @@ export type voidFunc = (any) => void
 
 // 侦听事件
 export enum LISTEN_EVENTS {
+  ONLOAD = 'load',
   LOAD = 'load',
   ERROR = 'error',
   UNHANDLEDREJECTION = 'unhandledrejection',
@@ -20,8 +21,16 @@ export enum LISTEN_EVENTS {
   PUSHSTATE = 'pushstate',
   REPLACESTATE = 'replacestate',
   HASHCHANGE = 'hashchange',
+  HISTORYCHANGE = 'historychange',
   CLICK = 'click',
   INPUT = 'input',
+  AJAX_SEND = 'send',
+  AJAX_OPEN = 'open',
+  AJAX_ERROR = 'ajax_error',
+  AJAX_LOAD = 'ajax_load',
+  AJAX_TIMEOUT = 'ajax_timeout',
+  AJAX_ONRSC = 'ajax_onreadystatechange',
+  VUE = 'vue',
 }
 
 // 日志分类
@@ -79,6 +88,8 @@ export interface ResourceError {
   tagName: string
   id: string
   className: string
+  time: number
+  md5:string
   name: string
   type: string
 }
@@ -87,10 +98,21 @@ export interface RuntimeError {
   msg: string
   lineno: number
   colno: number
-  error: unknown
+  // error: unknown
   src: string
   time: number
   type: string
+  md5:string
+}
+
+// ajax错误
+export interface AjaxError {
+  src: string
+  status: number
+  msg: string
+  time: number
+  type: string
+  md5:string
 }
 
 // 性能扩展
@@ -99,7 +121,7 @@ export interface PerfExt {
   fcp: number
   markFp?: number
   markFcp?: number
-  markPd?: number
+  markLoad?: number
   longImgLoad?: number
 }
 

@@ -1,13 +1,14 @@
-export const ua = navigator.userAgent.toLowerCase()
+// 
+const ua = window.navigator &&  navigator.userAgent.toLowerCase()
 
-export const testUa = (regexp) => regexp.test(ua)
-export const testVs = (regexp) =>
+const testUa = (regexp) => regexp.test(ua)
+const testVs = (regexp) =>
   ua
     .match(regexp)
     .toString()
     .replace(/[^0-9|_.]/g, '')
     .replace(/_/g, '.')
-    
+
 export function getCustomEvent() {
   if (typeof window.CustomEvent === 'function') return window.CustomEvent
 
@@ -20,3 +21,5 @@ export function getCustomEvent() {
   CustomEvent.prototype = window.Event.prototype
   return CustomEvent
 }
+
+export {  testUa, testVs }

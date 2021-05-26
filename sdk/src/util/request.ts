@@ -19,7 +19,7 @@ export function imgLoadPromise(url: string): Promise<Event> {
       resolve(res)
     }
     img.onerror = (err) => {
-      reject(err)
+       reject(err) //  防止上报地址错误造成死循环
     }
     img.src = url
   })

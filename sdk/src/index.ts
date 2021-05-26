@@ -1,9 +1,9 @@
 import { AppConfig, UserOptions } from './types/config'
-import {initConfig } from './config'
+import { initConfig } from './config'
+import { initCallback } from './collector/index'
 import {
   listenError,
-  listenPromiseError,
-  // listenXMLHttpRequest,
+  listenAjax,
   listenVueError,
   listenRouter,
   listenBehavior,
@@ -13,25 +13,29 @@ import {
 class Monitor {
   options: UserOptions
   config: AppConfig
-  // eventE: EventEmitter
   constructor(options: UserOptions) {
     // 合并配置 debug
     this.config = initConfig(options)
-    // this.eventE = new EventEmitter()
     this.init()
   }
   init(): void {
-    console.log('config', this.config)
+    initCallback()
     this.initEvents()
   }
-
   initEvents(): void {
-    console.log('this in initListen', this)
-    this.config._Vue && listenVueError(this.config._Vue)
     if (this.config.error) {
-      listenPromiseError()
-      listenError()
-      // listenXMLHttpRequest()
+      const {
+        errorJS,
+        errorVue,
+        errorAjax,
+        errorResource,
+      } = this.config.errorConfig
+      console.log('init err')
+      errorJS && listenError()
+      errorAjax && listenAjax()
+      if (errorVue && this.config._Vue) {
+        listenVueError(this.config._Vue)
+      }
     }
     if (this.config.behavior) {
       listenRouter()
@@ -40,19 +44,7 @@ class Monitor {
     if (this.config.performance) {
       listtenPerformance()
     }
-
-    // console.log('this in initListen', this)
-    // this.config.error && listenError()
-    // this.config._Vue && listenVueError(this.config._Vue)
-    // this.config.error &&
-    //   this.config.errorConfig.errorAjax &&
-    //   listenXMLHttpRequest()
-    // this.config.performance && listtenPerformance()
-    // this.config.behavior && listenRouter()
-    // this.config.behavior && listenBehavior()
   }
 }
 
 export default Monitor
-
-// 返回 type 和 数据

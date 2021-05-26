@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
+    <script src="./../dist/index.js"></script>
+    <script>
+        var dm = new Monitor({
+            version: '1.0.0', // 所监控应用版本
+            appkey: '4749fb30-3562-11eb-bf47-5d73b473057a', // 应用id，来自平台
+            reportUrl: 'http://118.190.245.148:8091/track.gif',
+            isTest: true,
+            uuid: '', // 设备唯一id 默认自动生成
+            uid: localStorage.getItem('uid') ? localStorage.getItem('uid') : ('user_' + Date.now()),
+            _Vue:Vue
+        }
+        )
+        performance.mark("first-paint-script");
+    </script>
+
+</head>
+
+<body>
+    <div id="app">{{message}}</div>
+
+    <script>
+
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue.js!',
+            },
+            mounted() {
+                catchVue('kk', Vue)
+                if (Math.random() < 0.9) {
+                    this.reverseMessag()
+                } else {
+                    this.reverseMessage()
+                }
+            },
+            methods: {
+                reverseMessage: function () {
+                    this.message = this.message.split('').reverse().join('')
+                    // error
+                },
+            },
+        })
+
+    </script>
+</body>
+
+</html>

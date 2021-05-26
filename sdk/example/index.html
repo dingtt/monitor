@@ -1,59 +1,61 @@
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-    <meta http-equiv="Expires" content="0">
-    <title>Document</title>
-    <script src="./../dist/index.js"></script>
-    <script>
-      var dm = new Monitor({
-    version: '1.0.0', // 所监控应用版本
-    appkey: 'vbh8f38fsfv', // 应用id，来自平台
-    reportUrl:'http://118.190.245.148:8091/track.gif',
-    isTest:true,
-    uuid: '', // 设备唯一id 默认自动生成
-    uid: '699999978',
-  }
-)
 
-  performance.mark("first-paint-script");
-    </script>
-  </head>
-  <body>
-    <p>badjs</p>
-    <div id="app">{{message}}</div>
-    <button id="btn-1">1跨域js</button>
-    <a href="#id1">id1</a>
-    <a href="#id2">id2</a>
-    <img src="./img/img.jpeg">
-    <input type="text">
-    <script>
-       performance.mark("startWork");
-    </script>
-    <img src="https://pic1.zhimg.com/v2-e327160ba23d1bc7c457b63798b85a69_1440w.jpg?source=172ae18b" alt="">
-    <img src="https://pic3.zhimg.com/80/v2-da19fcafb25e95a0717ddddb7311ae2f_720w.jpg" alt="">
-    <img id="img" src="https://pic2.zhimg.com/80/v2-d508a6d38ed6fc2741ef5f077ad62927_720w.jpg" alt="">
-    <!-- <img class="ceshiclass hei" id="remote-id" src="https://wx1.sinaimg.cn/thumb180/005vnhZYgy1ghevgfblcej30go0m8n1v2.jpg" alt="" > -->
-    <!-- <img src="https://upload-images.jianshu.io/upload_images/2666001-a0cd40681c49729e.jpeg?imageMogr2/auto-orient/strip|imageView2/2/w/421/format/w" alt=""> -->
-    <!-- <audio src="./media/horse1.ogv" controls="controls"></audio> -->
-    <!-- <video src="./media/movie.ogv" controls="controls"></video> -->
-    <div id="id1">id1</div>
-    <div id="id2">id2</div>
-    <script>
-       performance.mark("endWork");
-       performance.measure("work", "startWork", "endWork")
-    </script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
-    <!-- 第三方js有错误 script err-->
-    <!-- <script src="http://dazhong0.com/test1.js?v=2"></script> -->
-    <!-- 如果 JS 声明了 crossorigin="anonymous" 但是响应头没有正确，JS 会直接无法执行  算作资源错误 -->
-    <!-- <script src="http://dazhong0.com/test1.js?v=1" crossorigin></script> -->
-    <!-- js不存在 -->
-    <!-- <script src="http://dazhong0.com/dist/test2.js" ></script> -->
-    <!-- <script src="http://dazhong0.com/dist/test2.js" crossorigin></script> -->
-    <script src="./bad.js"></script>
-    <!-- <script src="./src/index2.js"></script> -->
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+  <meta http-equiv="Expires" content="0">
+  <title>example</title>
+  <script src="./../dist/index.js"></script>
+  <script>
+    var dm = new Monitor({
+      version: '1.0.0', // 所监控应用版本
+      appkey: '4749fb30-3562-11eb-bf47-5d73b473057a', // 应用id，来自平台
+      reportUrl: 'http://118.190.245.148:8091/track.gif',
+      isTest: true,
+      uuid: '', // 设备唯一id 默认自动生成
+      uid: localStorage.getItem('uid') ? localStorage.getItem('uid') : ('user_' + Date.now())
+    }
+    )
+    performance.mark("first-paint-script");
+  </script>
+</head>
+
+<body>
+  <p>badjs</p>
+  <a href="./7error.html">常见js语法错误</a>
+  <a href="./image.html">图片资源错误</a>
+  <a href="./ajax.html">ajax</a>
+  <a href="./sync.html">sync</a>
+  <a href="./vue.html">Vue错误</a>
+  <button id="btn-1">1跨域js</button>
+  <a href="#id1">id1</a>
+  <a href="#id2">id2</a>
+  <input type="text" placeholder="first input">
+  <script>
+    performance.mark("startWork");
+  </script>
+
+  <!-- <img class="ceshiclass hei" id="remote-id" src="https://wx1.sinaimg.cn/thumb180/005vnhZYgy1ghevgfblcej30go0m8n1v2.jpg" alt="" > -->
+  <!-- <img src="https://upload-images.jianshu.io/upload_images/2666001-a0cd40681c49729e.jpeg?imageMogr2/auto-orient/strip|imageView2/2/w/421/format/w" alt=""> -->
+  <!-- <audio src="./media/horse1.ogv" controls="controls"></audio> -->
+  <!-- <video src="./media/movie.ogv" controls="controls"></video> -->
+  <div id="id1">id1 content</div>
+  <div id="id2">id2 content</div>
+  <script>
+    performance.mark("endWork");
+    performance.measure("work", "startWork", "endWork")
+  </script>
+  <!-- 第三方js有错误 script err-->
+  <!-- <script src="http://dazhong0.com/test1.js?v=2"></script> -->
+  <!-- 如果 JS 声明了 crossorigin="anonymous" 但是响应头没有正确，JS 会直接无法执行  算作资源错误 -->
+  <!-- <script src="http://dazhong0.com/test1.js?v=1" crossorigin></script> -->
+  <!-- js不存在 -->
+  <!-- <script src="http://dazhong0.com/dist/test2.js" ></script> -->
+  <!-- <script src="http://dazhong0.com/dist/test2.js" crossorigin></script> -->
+  <script src="./bad.js"></script>
+  <!-- <script src="./src/index2.js"></script> -->
+</body>
+
 </html>

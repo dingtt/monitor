@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.9.1/axios.min.js"></script>
+    <script src="./../dist/index.js"></script>
+    <script>
+        var dm = new Monitor({
+            version: '1.0.0', // 所监控应用版本
+            appkey: '4749fb30-3562-11eb-bf47-5d73b473057a', // 应用id，来自平台
+            reportUrl: 'http://118.190.245.148:8091/track.gif',
+            isTest: true,
+            uuid: '', // 设备唯一id 默认自动生成
+            uid: localStorage.getItem('uid') ? localStorage.getItem('uid') : ('user_' + Date.now())
+        }
+        )
+        performance.mark("first-paint-script");
+    </script>
+</head>
+
+<body>
+    <div>axios</div>
+    <script>
+        // axios
+
+        axios.get('http://127.0.0.1:7001/api/studen').then(
+            (res) => {
+                // console.log(res)
+            },
+            (err) => {
+                // console.log(err)
+            }
+        )
+
+        axios.get('http://101.200.192.36/api/GetVesion?format=json').then(
+            (res) => {
+                // console.log(res)
+            },
+            (err) => {
+                // console.log(err)
+            }
+        )
+
+        axios.get('http://127.0.0.1:7001/search').then(
+            (res) => {
+                // console.log(res)
+            },
+            (err) => {
+                // console.log(err)
+            }
+        )
+    </script>
+
+</body>
+
+</html>

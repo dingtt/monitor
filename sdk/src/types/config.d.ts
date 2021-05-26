@@ -50,10 +50,3 @@ export interface ignoreType {
   ignoreUrls: Array<voidFun | RegExp | string>
 }
 
-// 索引类型
-// function pick<T, K extends keyof T>(o: T, names: K[]): T[K][] {
-//     return names.map(n => o[n]);
-// }
-
-// const res = pick(user, ['token', 'id', ])
-// // type UserConfig = Omit<DefaultConfig, 'author'>

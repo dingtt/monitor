@@ -1,4 +1,4 @@
-export class EventEmitter {
+export default class EventEmitter {
   public map: { [k: string]: [any] }
   constructor() {
     this.map = {}
@@ -11,6 +11,7 @@ export class EventEmitter {
     }
   }
   emit(name: string, ...args): void {
+    console.log('emit', name)
     if (this.map[name]) {
       const cbs = this.map[name]
       cbs.forEach((cb) => {
@@ -18,4 +19,15 @@ export class EventEmitter {
       })
     }
   }
+  off() {}
+  // 事件回调
+  static instance = (() => {
+    let eventEmitter = null
+    return () => {
+      if (!eventEmitter) {
+        eventEmitter = new EventEmitter()
+      }
+      return eventEmitter
+    }
+  })()
 }
